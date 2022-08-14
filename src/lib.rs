@@ -14,6 +14,21 @@ pub enum SanitizeGitRefError {
     DoesNotContainForwardSlash,
 }
 
+/// Rules obtained from [git-check-ref-format].
+///
+/// This function sanitizes git refs with the assumption that `--allow-onelevel` is true.
+///
+/// [git-check-ref-format]: https://git-scm.com/docs/git-check-ref-format
+pub fn sanitize_git_ref_onelevel(text: &str) -> String {
+    let sanitized = sanitize(
+        text,
+        SanitizeOptions {
+            allow_onelevel: true,
+        },
+    );
+    sanitized.expect("Sanitization should always suceed when allow_onelevel is true")
+}
+
 fn sanitize(text: &str, options: SanitizeOptions) -> Result<String, Box<SanitizeGitRefError>> {
     let SanitizeOptions { allow_onelevel } = options;
     let mut result = text.to_owned();
@@ -114,21 +129,6 @@ fn sanitize(text: &str, options: SanitizeOptions) -> Result<String, Box<Sanitize
     result = RE_MULTIPLE_HYPHENS.replace_all(&result, "-").into();
 
     Ok(result)
-}
-
-/// Rules obtained from [git-check-ref-format].
-///
-/// This function sanitizes git refs with the assumption that `--allow-onelevel` is true.
-///
-/// [git-check-ref-format]: https://git-scm.com/docs/git-check-ref-format
-pub fn sanitize_git_ref_onelevel(text: &str) -> String {
-    let sanitized = sanitize(
-        text,
-        SanitizeOptions {
-            allow_onelevel: true,
-        },
-    );
-    sanitized.expect("Sanitization should always suceed when allow_onelevel is true")
 }
 
 #[cfg(test)]
