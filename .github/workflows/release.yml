@@ -39,7 +39,6 @@ jobs:
         profile: minimal
         toolchain: stable
         override: true
-        target: ${{ matrix.triple.target }}
 
     - name: Cache cargo
       uses: actions/cache@v3
