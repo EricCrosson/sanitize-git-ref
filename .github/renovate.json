@@ -1,6 +1,7 @@
 {
   "extends": [
-    "config:js-lib"
+    "config:js-lib",
+    ":semanticCommits"
   ],
   "labels": [
     "dependencies"
