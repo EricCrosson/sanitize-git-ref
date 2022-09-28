@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.1...v1.0.2) (2022-09-28)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate thiserror to v1.0.37 ([334d60e](https://github.com/EricCrosson/sanitize-git-ref/commit/334d60e55c67f2583a4faae6915d7d05bef02c44))
+
 ## [1.0.1](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.0...v1.0.1) (2022-09-25)
 
 
