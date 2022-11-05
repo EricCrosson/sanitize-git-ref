@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.2...v1.0.3) (2022-11-05)
+
+
+### Bug Fixes
+
+* **deps:** update rust crate regex to v1.7.0 ([760142c](https://github.com/EricCrosson/sanitize-git-ref/commit/760142c6f9c80e422f2c4410e825421a7b303537))
+
 ## [1.0.2](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.1...v1.0.2) (2022-09-28)
 
 
