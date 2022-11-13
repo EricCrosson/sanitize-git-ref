@@ -1,5 +1,5 @@
 {
-  "name": "git-disjoint",
+  "name": "sanitize-git-ref",
   "version": "0.0.0-semantically-released",
   "devDependencies": {
     "@semantic-release/changelog": "6.0.1",
