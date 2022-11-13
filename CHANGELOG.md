@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.4...v1.0.5) (2022-11-13)
+
+
+### Bug Fixes
+
+* exclude unnecessary packages from cargo package ([e7f84de](https://github.com/EricCrosson/sanitize-git-ref/commit/e7f84de3d139465eb017f564e1a6f0d081d44392))
+
 ## [1.0.4](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.3...v1.0.4) (2022-11-13)
 
 
