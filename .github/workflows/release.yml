@@ -57,7 +57,7 @@ jobs:
       if: steps.cache-cargo.outputs.cache-hit != 'true'
       with:
         command: install
-        args: semantic-release-rust --version 1.0.0-alpha.8
+        args: semantic-release-rust --version 1.0.0-alpha.8 --force
 
     - name: Cargo test
       uses: actions-rs/cargo@v1
