@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.6...v1.0.7) (2022-11-13)
+
+
+### Bug Fixes
+
+* ignore Cargo.lock ([1edb6cb](https://github.com/EricCrosson/sanitize-git-ref/commit/1edb6cb3245977a9ad5682733cfc1003eaf9b420))
+
 ## [1.0.6](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.5...v1.0.6) (2022-11-13)
 
 
