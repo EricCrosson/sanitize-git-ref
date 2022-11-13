@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.5...v1.0.6) (2022-11-13)
+
+
+### Bug Fixes
+
+* **release:** create GitHub release ([3e272db](https://github.com/EricCrosson/sanitize-git-ref/commit/3e272db409711f5b080cf47b466b2bb27d9beae0))
+
 ## [1.0.5](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.4...v1.0.5) (2022-11-13)
 
 
