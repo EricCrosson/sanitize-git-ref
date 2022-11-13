@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.3...v1.0.4) (2022-11-13)
+
+
+### Bug Fixes
+
+* **deps:** relax semver ranges ([9f90484](https://github.com/EricCrosson/sanitize-git-ref/commit/9f90484e726d1977949ed9ff1490e836d98499df))
+
 ## [1.0.3](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.2...v1.0.3) (2022-11-05)
 
 
