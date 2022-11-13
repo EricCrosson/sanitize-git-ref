@@ -17,9 +17,9 @@ name = "sanitize_git_ref"
 path = "src/lib.rs"
 
 [dependencies]
-lazy_static = "=1.4.0"
-regex = "=1.7.0"
-thiserror = "=1.0.37"
+lazy_static = "1.4"
+regex = "1.7"
+thiserror = "1"
 
 [dev-dependencies]
 proptest = "=1.0.0"
