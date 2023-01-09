@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.8...v1.0.9) (2023-01-09)
+
+
+### Bug Fixes
+
+* no code update to force a release ([20aec2a](https://github.com/EricCrosson/sanitize-git-ref/commit/20aec2aead8787281d6dbe844fb1dff8a0d88446))
+
 ## [1.0.8](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.7...v1.0.8) (2023-01-09)
 
 
