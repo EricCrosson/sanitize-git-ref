@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.7...v1.0.8) (2023-01-09)
+
+
+### Bug Fixes
+
+* **ci:** use rust-action for releases ([8da5b72](https://github.com/EricCrosson/sanitize-git-ref/commit/8da5b727140938101642f25007f985e019a6aac8))
+
 ## [1.0.7](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.6...v1.0.7) (2022-11-13)
 
 
