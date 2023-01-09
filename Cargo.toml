@@ -16,7 +16,8 @@ exclude = [
   "/.releaserc.json",
   "/CHANGELOG.md",
   "/flake.{lock,nix}",
-  "/package*.json"
+  "/package{,-lock}.json",
+  "/node_modules"
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
