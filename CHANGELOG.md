@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.9...v1.0.10) (2023-01-14)
+
+
+### Bug Fixes
+
+* **deps:** migrate to semantic-release-action/next-release-version ([c60d00d](https://github.com/EricCrosson/sanitize-git-ref/commit/c60d00dc92ad963033fb8feeb2a2836dfa9732f6))
+
 ## [1.0.9](https://github.com/EricCrosson/sanitize-git-ref/compare/v1.0.8...v1.0.9) (2023-01-09)
 
 
