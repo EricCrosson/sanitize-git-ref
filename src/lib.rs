@@ -1,17 +1,12 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use thiserror::Error;
+
+mod error;
+
+use crate::error::SanitizeGitRefError;
 
 struct SanitizeOptions {
     allow_onelevel: bool,
-}
-
-#[derive(Error, Debug)]
-pub enum SanitizeGitRefError {
-    #[error(
-        "Ref must contain at least one '/'. Did you mean to call `sanitize_git_ref_onelevel`?"
-    )]
-    DoesNotContainForwardSlash,
 }
 
 /// Rules obtained from [git-check-ref-format].
