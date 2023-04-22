@@ -114,6 +114,8 @@
             pkgs.nodejs
           ];
 
+          PROPTEST_CASES = 1000;
+
           inherit (self.checks.${system}.pre-commit-check) shellHook;
         };
       };
