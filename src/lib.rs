@@ -1,6 +1,3 @@
-use lazy_static::lazy_static;
-use regex::Regex;
-
 mod error;
 
 use crate::error::SanitizeGitRefError;
@@ -24,18 +21,53 @@ pub fn sanitize_git_ref_onelevel(text: &str) -> String {
     sanitized.expect("Sanitization should always suceed when allow_onelevel is true")
 }
 
+/// Replace consecutive occurrences of `target` with hyphens
+fn sanitize_consecutive_run(string: String, target: char) -> String {
+    let mut current_run = 0;
+    string
+        .chars()
+        .map(|c| {
+            match c == target {
+                true => current_run += 1,
+                false => current_run = 0,
+            };
+            match current_run < 2 {
+                true => c,
+                false => '-',
+            }
+        })
+        .collect()
+}
+
+/// Remove consecutive occurrences of `target`
+fn elide_consecutive_run(mut string: String, target: char) -> String {
+    let mut current_run = 0;
+    string.retain(|c| {
+        match c == target {
+            true => current_run += 1,
+            false => current_run = 0,
+        };
+        current_run < 2
+    });
+    string
+}
+
 fn sanitize(text: &str, options: SanitizeOptions) -> Result<String, Box<SanitizeGitRefError>> {
     let SanitizeOptions { allow_onelevel } = options;
     let mut result = text.to_owned();
 
-    // They must contain at least one /. This enforces the presence of a category like heads/, tags/ etc. but the actual names are not restricted. If the --allow-onelevel option is used, this rule is waived.
+    // They must contain at least one /. This enforces the presence of a
+    // category like heads/, tags/ etc. but the actual names are not restricted.
+    // If the --allow-onelevel option is used, this rule is waived.
     if !allow_onelevel {
         if !result.contains('/') {
             return Err(Box::new(SanitizeGitRefError::DoesNotContainForwardSlash));
         }
     }
 
-    // They can include slash / for hierarchical (directory) grouping, but no slash-separated component can begin with a dot . or end with the sequence .lock.
+    // They can include slash / for hierarchical (directory) grouping, but
+    // no slash-separated component can begin with a dot . or end with the
+    // sequence .lock.
     if result.starts_with('.') {
         result = result.replacen('.', "-", 1);
     }
@@ -43,64 +75,59 @@ fn sanitize(text: &str, options: SanitizeOptions) -> Result<String, Box<Sanitize
     // FIXME: this is overly cautious
     result = result.replace(".lock", "-");
 
-    // They cannot have ASCII control characters (i.e. bytes whose values are lower than \040, or \177 DEL).
-    lazy_static! {
-        static ref RE_CONTROL_CHARACTER: Regex = Regex::new("[[:cntrl:]]+")
-            .expect("Expected control-character regular expression to compile");
-    }
-    result = RE_CONTROL_CHARACTER.replace_all(&result, "-").into();
-
-    // They cannot have space anywhere.
-    lazy_static! {
-        static ref RE_WHITESPACE_CHARACTER: Regex = Regex::new("[[:space:]]+")
-            .expect("Expected whitespace-character regular expression to compile");
-    }
-    result = RE_WHITESPACE_CHARACTER.replace_all(&result, "-").into();
-    // Property testing has identified characters that are not detected by the
-    // above regex, so we'll use this stronger test to remove all spaces.
-    result.retain(|char| !char.is_whitespace());
-
-    // They cannot have tilde ~ anywhere.
-    result = result.replace('~', "-");
-
-    // They cannot have caret ^ anywhere.
-    result = result.replace('^', "-");
-
-    // They cannot have colon : anywhere.
-    result = result.replace(':', "-");
-
-    // They cannot have question-mark ?, asterisk *, or open bracket [ anywhere. See the --refspec-pattern option below for an exception to this rule.
-    result = result.replace('?', "-");
-    result = result.replace('*', "-");
-    result = result.replace('[', "-");
-
     // They cannot contain a sequence @{.
     result = result.replace("@{", "-");
 
-    // They cannot be the single character @.
-    // FIXME: this implementation is too restrictive but I'm not exactly sure of the rules right now.
-    // Happy to widen this up if I get more clarity and feel confident we'll avoid false-positives.
-    result = result.replace('@', "-");
+    result = result
+        .chars()
+        .map(|c| -> char {
+            // They cannot have ASCII control characters (i.e. bytes whose
+            // values are lower than \040, or \177 DEL).
+            if c.is_ascii_control() {
+                return '-';
+            }
 
-    // They cannot contain a \.
-    result = result.replace('\\', "-");
+            // They cannot have space anywhere.
+            if c.is_whitespace() {
+                return '-';
+            }
+
+            match c {
+                // They cannot have tilde ~ anywhere.
+                '~'
+                // They cannot have caret ^ anywhere.
+                | '^'
+
+                // They cannot have colon : anywhere.
+                | ':'
+
+                // They cannot have question-mark ?, asterisk *, or open bracket
+                // [ anywhere. See the --refspec-pattern option below for an
+                // exception to this rule.
+                | '?'
+                | '*'
+                | '['
+
+                // They cannot contain a \.
+                | '\\'
+
+                // They cannot be the single character @.
+                | '@'
+
+                => '-',
+
+                _ => c,
+            }
+        })
+        .collect();
 
     // They cannot contain multiple consecutive slashes (see the --normalize option below for an exception to this rule)
-    lazy_static! {
-        static ref RE_MULTIPLE_FORWARD_SLASHES: Regex = Regex::new("/{2,}")
-            .expect("Expected multiple-forward-slashes regular expression to compile");
-    }
-    result = RE_MULTIPLE_FORWARD_SLASHES.replace_all(&result, "-").into();
+    result = sanitize_consecutive_run(result, '/');
 
     // They cannot have two consecutive dots .. anywhere.
-    lazy_static! {
-        static ref RE_MULTIPLE_DOTS: Regex =
-            Regex::new("[.]{2,}").expect("Expected multiple-dots regular expression to compile");
-    }
-    result = RE_MULTIPLE_DOTS.replace_all(&result, "-").into();
+    result = sanitize_consecutive_run(result, '.');
 
     // They cannot begin with a slash / (see the --normalize option below for an exception to this rule)
-    // FIXME: this has a bug, property-testing is finding it consistently
     while result.starts_with('/') {
         result = result.replacen('/', "-", 1);
     }
@@ -111,17 +138,9 @@ fn sanitize(text: &str, options: SanitizeOptions) -> Result<String, Box<Sanitize
         result.pop();
     }
 
-    if result.ends_with('/') {
-        result.pop();
-    }
-
     // Convert any sequence of multiple hyphens into a single hyphen.
     // We convert invalid characters into hyphens to prevent shrinking the input into an empty string.
-    lazy_static! {
-        static ref RE_MULTIPLE_HYPHENS: Regex =
-            Regex::new("-{2,}").expect("Expected multiple-hyphens regular expression to compile");
-    }
-    result = RE_MULTIPLE_HYPHENS.replace_all(&result, "-").into();
+    result = elide_consecutive_run(result, '-');
 
     Ok(result)
 }
@@ -212,7 +231,12 @@ mod test {
     );
 
     // They cannot have ASCII control characters (i.e. bytes whose values are lower than \040, or \177 DEL).
-    // FIXME: Maintainer's note: not sure how to test "bytes whose values are lower than \040, or \177 DEL" yet
+    test_does_not_violate_branch_naming_rule!(
+        branch_name_does_not_contain_a_control_character,
+        proptest_branch_name_does_not_contain_a_control_character,
+        |branch_name: &str| -> bool { branch_name.contains(|c: char| c.is_ascii_control()) },
+        String::from("/refs/heads/master") + std::str::from_utf8(&[039]).unwrap() + "foo"
+    );
 
     // They cannot have space anywhere.
     test_does_not_violate_branch_naming_rule!(
@@ -288,10 +312,17 @@ mod test {
 
     // They cannot contain multiple consecutive slashes (see the --normalize option for an exception to this rule)
     test_does_not_violate_branch_naming_rule!(
+        branch_name_does_not_contain_consecutive_forward_slashes,
+        proptest_branch_name_does_not_contain_consecutive_forward_slashes,
+        |branch_name: &str| -> bool { branch_name.contains("//") },
+        "refs/heads/master//all-right"
+    );
+
+    test_does_not_violate_branch_naming_rule!(
         branch_name_does_not_contain_multiple_consecutive_forward_slashes,
         proptest_branch_name_does_not_contain_multiple_consecutive_forward_slashes,
         |branch_name: &str| -> bool { branch_name.contains("//") },
-        "refs/heads/master//all-right"
+        "refs/heads/master///all////right"
     );
 
     // They cannot end with a dot .
