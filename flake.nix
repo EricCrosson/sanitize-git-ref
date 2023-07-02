@@ -111,7 +111,6 @@
           nativeBuildInputs = [
             fenix-toolchain
             fenix.packages.${system}.rust-analyzer
-            pkgs.nodejs
           ];
 
           PROPTEST_CASES = 1000;
