@@ -30,4 +30,4 @@ path = "src/lib.rs"
 
 [dev-dependencies]
 proptest = "=1.10.0"
-proptest-derive = "=0.7.0"
+proptest-derive = "=0.8.0"
